@@ -1,3 +1,4 @@
+from ast import Call
 import typing as t
 from abc import abstractmethod, abstractproperty
 from dataclasses import dataclass
@@ -53,6 +54,18 @@ class SequentialRegexSubstituter(TextPreprocessor):
 
         return text
 
+
+@dataclass
+class FunctionApplier(TextPreprocessor):
+    func: t.Callable
+
+    def __post_init__(self):
+        if not hasattr(self.func, '__call__'):
+            raise TypeError("__call__ must be implemented. 'func' must be callable.")
+
+    def __call__(self, text: str) -> str:
+
+        return self.func(text)
 
 
 @dataclass
